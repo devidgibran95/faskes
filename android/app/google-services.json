@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "543244665666",
+    "project_id": "fasilitaskesehatanbaru",
+    "storage_bucket": "fasilitaskesehatanbaru.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543244665666:android:8cd9631c1c0f485aacfedb",
+        "android_client_info": {
+          "package_name": "com.example.faskes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCen2wvTjjDF5dD2xj6ZIc9CQzgnJm3fI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

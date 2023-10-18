@@ -31,7 +31,7 @@ class Welcome extends StatelessWidget {
           ),
           //Semua Fasilitas dalam Genggaman Anda!\
           Text(
-            'Semua Fasilitas dalam Genggaman Anda!',
+            'Fasilitas kesehatan dalam genggaman Anda!',
             style: heading4,
             textAlign: TextAlign.center,
           ),
@@ -39,18 +39,30 @@ class Welcome extends StatelessWidget {
           const Spacer(),
           //Get Started
 
-          GestureDetector(
-            onTap: () => Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) {
-              return const LoginOrRegister();
-            })),
-            child: Container(
-              decoration: BoxDecoration(
-                color: ancent,
-                borderRadius: BorderRadius.circular(12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) {
+                    return const LoginOrRegister();
+                  },
+                ));
+              },
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: ancent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.all(24),
+                child: Center(
+                  child: Text(
+                    'Mulai',
+                    style: TextStyle(color: white),
+                  ),
+                ),
               ),
-              padding: const EdgeInsets.all(24),
-              child: Text('Get Started', style: TextStyle(color: white)),
             ),
           ),
 

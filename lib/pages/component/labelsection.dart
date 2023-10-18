@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class LabelSection extends StatelessWidget {
   final String text;
   final TextStyle style;
+  // create on tap callback
 
   const LabelSection({required this.text, required this.style, super.key});
 
@@ -16,9 +17,9 @@ class LabelSection extends StatelessWidget {
           text,
           style: style,
         ),
-        Icon(
+        const Icon(
           Icons.more_horiz,
-          color: icon,
+          color: Colors.blue,
           size: 28,
         ),
       ],

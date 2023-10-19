@@ -22,7 +22,7 @@ class RatingService {
     }
   }
 
-  getRatingAverage(List<RatingModel> ratings) {
+  double getRatingAverage(List<RatingModel> ratings) {
     // get average rating from list of rating
     double totalRating = 0;
 
@@ -31,5 +31,18 @@ class RatingService {
     }
 
     return totalRating / ratings.length;
+  }
+
+  // add rating
+  Future<void> addRating(RatingModel rating) async {
+    try {
+      final doc = await _firestore.collection('ratings').add(rating.toJson());
+
+      //update id
+      await doc.update({'id': doc.id});
+    } catch (e) {
+      print('Error adding rating: $e');
+      rethrow;
+    }
   }
 }

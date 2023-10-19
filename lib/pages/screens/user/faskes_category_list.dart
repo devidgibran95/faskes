@@ -19,6 +19,7 @@ class _FaskesCategoryListState extends State<FaskesCategoryList> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Daftar ${widget.category.name}'),
+          elevation: 0,
         ),
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
@@ -31,18 +32,23 @@ class _FaskesCategoryListState extends State<FaskesCategoryList> {
                   .map((e) => FaskesModel.fromJson(e.data()))
                   .toList();
 
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                child: ListView.builder(
-                  itemCount: catList.length,
-                  itemBuilder: (context, index) {
-                    return FaskesCardWidget(
-                      faskes: catList[index],
+              return catList.isEmpty
+                  ? const Center(
+                      child: Text(
+                          "Belum ada fasilitas kesehatan dengan kategori ini."),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 20),
+                      child: ListView.builder(
+                        itemCount: catList.length,
+                        itemBuilder: (context, index) {
+                          return FaskesCardWidget(
+                            faskes: catList[index],
+                          );
+                        },
+                      ),
                     );
-                  },
-                ),
-              );
             } else {
               return const Center(
                 child: CircularProgressIndicator(),

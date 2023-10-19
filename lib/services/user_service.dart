@@ -72,11 +72,28 @@ class UserService {
     }
   }
 
-  Future<void> updateUser(UserModel user) async {
+  Future<UserModel> updateUser(UserModel user) async {
     try {
       await _firestore.collection('users').doc(user.id).update(user.toJson());
+
+      return getUser(user.id!);
     } catch (e) {
       print('Error updating user: $e');
+      rethrow;
+    }
+  }
+
+  //update user image url
+  Future<void> updateUserImageUrl(String id, String url) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(id)
+          .update({'image': url}).then((value) {
+        print("User Image Url Updated");
+      });
+    } catch (e) {
+      print('Error updating user image url: $e');
       rethrow;
     }
   }

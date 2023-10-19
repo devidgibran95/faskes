@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faskes/models/user_model.dart';
 import 'package:faskes/pages/auth/login_or_register.dart';
+import 'package:faskes/pages/screens/edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
@@ -53,8 +54,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             GFAvatar(
                               backgroundImage: NetworkImage(user.image ??
                                   "https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-and-shapes-3/177800/130-512.png"),
-                              shape: GFAvatarShape.standard,
-                              size: 100,
+                              shape: GFAvatarShape.circle,
+                              size: 120,
                             ),
                             // make name text big and bold
                             Padding(
@@ -97,7 +98,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           Icons.edit,
                                           color: Colors.white,
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          PersistentNavBarNavigator
+                                              .pushNewScreen(
+                                            context,
+                                            screen: EditProfile(
+                                              userModel: widget.user,
+                                            ),
+                                            withNavBar: false,
+                                          );
+                                        },
                                         color: Colors.blue,
                                         fullWidthButton: true,
                                         text: 'Edit Profil'),

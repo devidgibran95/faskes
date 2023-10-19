@@ -17,11 +17,11 @@ class LabelSection extends StatelessWidget {
           text,
           style: style,
         ),
-        const Icon(
-          Icons.more_horiz,
-          color: Colors.blue,
-          size: 28,
-        ),
+        // const Icon(
+        //   Icons.more_horiz,
+        //   color: Colors.blue,
+        //   size: 28,
+        // ),
       ],
     );
   }

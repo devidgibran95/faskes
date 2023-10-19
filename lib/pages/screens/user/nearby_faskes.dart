@@ -21,7 +21,10 @@ class _NearbyFaskesState extends State<NearbyFaskes> {
   // calcualte faskes latitude and longitude to user latitude and longitude
   // then calculate the distance
   List<FaskesModel> calculateDistance(List<FaskesModel> nearbyFaskes) {
+    List tempFaskesDistances = [];
+
     List<FaskesModel> faskes = [];
+
     for (var i = 0; i < nearbyFaskes.length; i++) {
       var fask = nearbyFaskes[i];
       var distance = calculateDistanceInKilometers(
@@ -31,10 +34,29 @@ class _NearbyFaskesState extends State<NearbyFaskes> {
           fask.longitude!);
 
       // if distance is less than 10 km, add to faskes list
+      print(fask.name! + ": " + distance.toString());
       if (distance <= 20) {
-        faskes.add(fask);
+        tempFaskesDistances.add(
+          {
+            'faskesId': fask.id!,
+            'distance': distance,
+          },
+        );
       }
     }
+
+    // sort tempFaskesDistances map by value ascending
+    tempFaskesDistances.sort((a, b) => a['distance'].compareTo(b['distance']));
+
+    // add tempFaskesDistnaces to faskes
+    for (var i = 0; i < tempFaskesDistances.length; i++) {
+      var faskesId = tempFaskesDistances[i]['faskesId'];
+
+      var f = nearbyFaskes.firstWhere((element) => element.id == faskesId);
+
+      faskes.add(f);
+    }
+
     return faskes;
   }
 
@@ -70,7 +92,10 @@ class _NearbyFaskesState extends State<NearbyFaskes> {
                 itemBuilder: (context, index) {
                   var fask = sortedFaskes[index];
 
-                  return FrontFaskesCardWidget(faskes: fask);
+                  return FrontFaskesCardWidget(
+                    faskes: fask,
+                    userLocation: widget.userLocation,
+                  );
                 });
           } else {
             return const Center(

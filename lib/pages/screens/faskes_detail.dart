@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faskes/models/faskes_model.dart';
 import 'package:faskes/models/fav_faskes_model.dart';
+import 'package:faskes/models/rating_model.dart';
+import 'package:faskes/pages/screens/user/rating_list.dart';
 import 'package:faskes/services/category_service.dart';
 import 'package:faskes/services/fav_faskes_service.dart';
 import 'package:faskes/services/region_service.dart';
@@ -7,6 +10,8 @@ import 'package:faskes/services/type_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/button/gf_button.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FaskesDetail extends StatefulWidget {
@@ -125,6 +130,68 @@ class _FaskesDetailState extends State<FaskesDetail> {
                       fontSize: 25,
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  InkWell(
+                    onTap: () {
+                      // navigate to rating list page
+                      PersistentNavBarNavigator.pushNewScreen(
+                        context,
+                        screen: RatingList(faskes: widget.faskes),
+                        withNavBar: false,
+                      );
+                    },
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("ratings")
+                          .where("faskesId", isEqualTo: widget.faskes.id)
+                          .snapshots()
+                          .map((querySnapshot) => querySnapshot.docs
+                              .map((e) => RatingModel.fromJson(e.data()))
+                              .toList()),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          List<RatingModel> ratings = [];
+                          for (var a in snapshot.data!) {
+                            ratings.add(a);
+                          }
+
+                          // calcualte rating value average from ratings
+                          double ratingValue = 0;
+                          for (var a in ratings) {
+                            ratingValue += a.rating!;
+                          }
+
+                          // calculate average
+                          ratingValue = ratingValue / ratings.length;
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              GFRating(
+                                onChanged: (value) {},
+                                value: ratingValue.isNaN ? 0 : ratingValue,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "(${ratings.length} Ulasan)",
+                                style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 18,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Divider(),
                   const SizedBox(height: 10),
                   Row(
                     children: [
@@ -137,6 +204,7 @@ class _FaskesDetailState extends State<FaskesDetail> {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 10),
                   // create text with address and region name but the region name is bold
                   Row(
@@ -163,6 +231,7 @@ class _FaskesDetailState extends State<FaskesDetail> {
                       )),
                     ],
                   ),
+
                   const SizedBox(height: 10),
                   Row(
                     children: [

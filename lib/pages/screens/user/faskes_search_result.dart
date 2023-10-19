@@ -6,7 +6,6 @@ import 'package:faskes/pages/component/text_field.dart';
 import 'package:faskes/pages/screens/faskes_detail.dart';
 import 'package:faskes/pages/screens/widgets/faskes_card_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -21,13 +20,8 @@ class FaskesSearchResult extends StatefulWidget {
 }
 
 class _FaskesSearchResultState extends State<FaskesSearchResult> {
-  Location _locationController = new Location();
   final Completer<GoogleMapController> _controller = Completer();
 
-  static const LatLng _pCyberPlex =
-      LatLng(-7.973423077691103, 112.61298281822337);
-  static const LatLng _pBandulanPlex =
-      LatLng(-7.980564799884812, 112.6094458248418);
   LatLng? _currentP;
 
   final Map<String, Marker> _markers = {};
@@ -38,7 +32,6 @@ class _FaskesSearchResultState extends State<FaskesSearchResult> {
 
   @override
   void initState() {
-    getLocationUpdates();
     setInitialData();
 
     super.initState();
@@ -76,14 +69,20 @@ class _FaskesSearchResultState extends State<FaskesSearchResult> {
   Future<void> _onMapCreated(GoogleMapController controller) async {
     List<FaskesModel> rawSc = await FirebaseFirestore.instance
         .collection('faskes')
-        .where('name', isGreaterThanOrEqualTo: widget.query)
-        .where('name', isLessThanOrEqualTo: '${widget.query!}\uf8ff')
         .get()
         .then((value) =>
             value.docs.map((e) => FaskesModel.fromJson(e.data())).toList());
 
+    List<FaskesModel> searchResult = [];
+
+    for (final f in rawSc) {
+      if (f.name!.toLowerCase().contains(widget.query!.toLowerCase())) {
+        searchResult.add(f);
+      }
+    }
+
     setState(() {
-      faskes = rawSc;
+      faskes = searchResult;
     });
 
     _markers.clear();
@@ -124,7 +123,7 @@ class _FaskesSearchResultState extends State<FaskesSearchResult> {
               context: context,
               builder: (context) {
                 return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.9,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 20),
@@ -207,37 +206,5 @@ class _FaskesSearchResultState extends State<FaskesSearchResult> {
               ),
             ),
     );
-  }
-
-  Future<void> getLocationUpdates() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionnGranted;
-
-    _serviceEnabled = await _locationController.serviceEnabled();
-    if (_serviceEnabled) {
-      _serviceEnabled = await _locationController.requestService();
-    } else {
-      return;
-    }
-
-    _permissionnGranted = await _locationController.hasPermission();
-    if (_permissionnGranted == PermissionStatus.denied) {
-      _permissionnGranted = await _locationController.requestPermission();
-      if (_permissionnGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    _locationController.onLocationChanged
-        .listen((LocationData currentLocation) {
-      if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
-        setState(() {
-          _currentP =
-              LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          print(_currentP);
-        });
-      }
-    });
   }
 }
